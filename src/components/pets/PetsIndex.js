@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Card from 'react-bootstrap/Card'
 import { Link } from 'react-router-dom'
+import LoadingScreen from '../shared/LoadingScreen'
 
 // api function from our api file
 import { getAllPets } from '../../api/pets'
@@ -9,6 +10,8 @@ import { getAllPets } from '../../api/pets'
 import messages from '../shared/AutoDismissAlert/messages'
 
 // this is a styling object. they're a quick easy way add focused css properties to our react components
+// styling objects use any CSS style, but in camelCase instead of the typical hyphenated naming convention
+// this is because we're in js
 const cardContainerStyle = {
     display: 'flex',
     flexFlow: 'row wrap',
@@ -20,7 +23,7 @@ const cardContainerStyle = {
 const PetsIndex = (props) => {
     const [pets, setPets] = useState(null)
     const [error, setError] = useState(false)
-
+    console.log('these are the pets in index', pets)
     // pull the message alert (msgAlert) from props
     const { msgAlert } = props
 
@@ -45,7 +48,7 @@ const PetsIndex = (props) => {
 
     if (!pets) {
         // if no pets loaded yet, display 'loading'
-        return <p>...loading ...please wait</p>
+        return <LoadingScreen />
     } else if (pets.length === 0) {
         // otherwise if there ARE no pets, display that message
         return <p>No pets yet, go add some!</p>
@@ -60,6 +63,11 @@ const PetsIndex = (props) => {
                 <Card.Text>
                     <Link to={`/pets/${pet.id}`} className="btn btn-info">View { pet.name }</Link>
                 </Card.Text>
+                { pet.owner ?
+                <Card.Footer>
+                     owner: {pet.owner.email} 
+                </Card.Footer>
+                : null}
             </Card.Body>
         </Card>
     ))
